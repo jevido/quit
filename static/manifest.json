@@ -1,0 +1,21 @@
+{
+	"name": "Quit - Quit Smoking Companion",
+	"short_name": "Quit",
+	"description": "Track your smoke-free journey and watch your body heal.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#f4f8f6",
+	"theme_color": "#3a9a7e",
+	"icons": [
+		{
+			"src": "/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
