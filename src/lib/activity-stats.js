@@ -2,6 +2,8 @@ const STATS_KEY = 'quit-activity-stats';
 
 export const DEFAULT_STATS = {
 	breathingCycles: 0,
+	breathingStreak: 0,
+	longestBreathingStreak: 0,
 	cravingsResisted: 0,
 	appVisits: 0,
 	dailyStreak: 0,
@@ -58,7 +60,16 @@ export function recordAppVisit(stats) {
 }
 
 export function addBreathingCycles(stats, count) {
-	return { ...stats, breathingCycles: stats.breathingCycles + count };
+	const breathingCycles = stats.breathingCycles + count;
+	const breathingStreak = stats.breathingStreak + count;
+	const longestBreathingStreak = Math.max(stats.longestBreathingStreak, breathingStreak);
+
+	return { ...stats, breathingCycles, breathingStreak, longestBreathingStreak };
+}
+
+export function resetBreathingStreak(stats) {
+	if (stats.breathingStreak === 0) return stats;
+	return { ...stats, breathingStreak: 0 };
 }
 
 export function addCravingResisted(stats) {

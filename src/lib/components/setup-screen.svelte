@@ -155,7 +155,7 @@
 		</Card>
 
 		<p class="text-center text-xs text-muted-foreground">
-			All data is stored locally on your device. No account needed.
+			All data is stored locally on your device. There are no servers.
 		</p>
 	</div>
 </div>

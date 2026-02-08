@@ -1,9 +1,20 @@
 <script>
-	import { Check, Heart, Lock, Shield, Sparkles, Star, Trophy, Wind } from '@lucide/svelte';
+	import {
+		Check,
+		Crown,
+		Heart,
+		Leaf,
+		Lock,
+		Shield,
+		Sparkles,
+		Star,
+		Trophy,
+		Wind
+	} from '@lucide/svelte';
 	import { ACTIVITY_ACHIEVEMENTS, getAchievementProgress } from '$lib/activity-achievements.js';
 	import { cn } from '$lib/utils.js';
 
-	let { stats } = $props();
+	let { stats, elapsedMinutes = 0 } = $props();
 
 	const ICON_MAP = {
 		wind: Wind,
@@ -11,6 +22,8 @@
 		sparkles: Sparkles,
 		trophy: Trophy,
 		star: Star,
+		leaf: Leaf,
+		crown: Crown,
 		heart: Heart
 	};
 
@@ -24,6 +37,12 @@
 
 	let filter = $state('all');
 
+	const formatTimeValue = (minutes) => {
+		if (minutes >= 1440) return `${Math.floor(minutes / 1440)}d`;
+		if (minutes >= 60) return `${Math.floor(minutes / 60)}h`;
+		return `${Math.floor(minutes)}m`;
+	};
+
 	const filtered = $derived.by(() =>
 		filter === 'all'
 			? ACTIVITY_ACHIEVEMENTS
@@ -33,7 +52,7 @@
 	const totalUnlocked = $derived.by(
 		() =>
 			ACTIVITY_ACHIEVEMENTS.filter(
-				(achievement) => achievement.getValue(stats) >= achievement.threshold
+				(achievement) => achievement.getValue(stats, elapsedMinutes) >= achievement.threshold
 			).length
 	);
 </script>
@@ -46,7 +65,7 @@
 				{totalUnlocked} / {ACTIVITY_ACHIEVEMENTS.length} unlocked
 			</span>
 		</div>
-		<p class="text-sm text-muted-foreground">Earn badges through your actions, not just time.</p>
+		<p class="text-sm text-muted-foreground">Earn badges through your actions and your time.</p>
 	</div>
 
 	<div class="grid grid-cols-2 gap-2.5">
@@ -65,6 +84,18 @@
 		<div class="rounded-lg border border-border bg-card p-3 text-center">
 			<div class="font-serif text-lg font-bold text-foreground">{stats.dailyStreak}</div>
 			<div class="text-[10px] tracking-wide text-muted-foreground uppercase">Current Streak</div>
+		</div>
+		<div class="rounded-lg border border-border bg-card p-3 text-center">
+			<div class="font-serif text-lg font-bold text-foreground">
+				{Math.floor(elapsedMinutes / 1440)}
+			</div>
+			<div class="text-[10px] tracking-wide text-muted-foreground uppercase">Days Smoke-Free</div>
+		</div>
+		<div class="rounded-lg border border-border bg-card p-3 text-center">
+			<div class="font-serif text-lg font-bold text-foreground">{stats.longestBreathingStreak}</div>
+			<div class="text-[10px] tracking-wide text-muted-foreground uppercase">
+				Longest Breath Streak
+			</div>
 		</div>
 	</div>
 
@@ -86,9 +117,14 @@
 
 	<div class="space-y-3">
 		{#each filtered as achievement (achievement.id)}
-			{@const progress = getAchievementProgress(achievement, stats)}
+			{@const progress = getAchievementProgress(achievement, stats, elapsedMinutes)}
 			{@const isComplete = progress >= 1}
-			{@const currentValue = achievement.getValue(stats)}
+			{@const currentValue = achievement.getValue(stats, elapsedMinutes)}
+			{@const isTimeAchievement = achievement.id.startsWith('time-')}
+			{@const displayValue = isTimeAchievement ? formatTimeValue(currentValue) : currentValue}
+			{@const displayThreshold = isTimeAchievement
+				? formatTimeValue(achievement.threshold)
+				: achievement.threshold}
 			{@const IconComponent = ICON_MAP[achievement.icon] || Star}
 			{@const progressPercent = Math.min(100, Math.round(progress * 100))}
 			<div
@@ -140,7 +176,7 @@
 							<div class="mt-2.5 space-y-1">
 								<div class="flex items-center justify-between text-[11px]">
 									<span class="font-medium text-primary">
-										{currentValue} / {achievement.threshold}
+										{displayValue} / {displayThreshold}
 									</span>
 									<span class="text-muted-foreground">{progressPercent}%</span>
 								</div>

@@ -8,6 +8,7 @@
 		addCravingResisted,
 		clearStats,
 		loadStats,
+		resetBreathingStreak,
 		recordAppVisit,
 		saveStats
 	} from '$lib/activity-stats.js';
@@ -30,9 +31,11 @@
 	} = $props();
 
 	let elapsedMinutes = $state(0);
+	let nowTs = $state(Date.now());
 	let activeTab = $state('progress');
 	let activityStats = $state(null);
 	let cravingFeedback = $state(false);
+	let cravingCooldownUntil = $state(0);
 	let elapsedInterval = null;
 	let cravingTimeout = null;
 
@@ -44,6 +47,7 @@
 
 		const updateElapsed = () => {
 			elapsedMinutes = getElapsedMinutes(new Date(quitDate));
+			nowTs = Date.now();
 		};
 
 		updateElapsed();
@@ -62,7 +66,22 @@
 		activityStats = updated;
 	};
 
+	const handleBreathingStreakReset = () => {
+		if (!activityStats) return;
+		const updated = resetBreathingStreak(activityStats);
+		if (updated !== activityStats) {
+			saveStats(updated);
+			activityStats = updated;
+		}
+	};
+
+	const cooldownRemaining = $derived.by(() =>
+		Math.max(0, Math.ceil((cravingCooldownUntil - nowTs) / 1000))
+	);
+	const isCravingCooldown = $derived.by(() => cooldownRemaining > 0);
+
 	const handleCravingResisted = () => {
+		if (isCravingCooldown) return;
 		if (!activityStats) return;
 		const updated = addCravingResisted(activityStats);
 		saveStats(updated);
@@ -73,6 +92,8 @@
 		cravingTimeout = setTimeout(() => {
 			cravingFeedback = false;
 		}, 2000);
+
+		cravingCooldownUntil = Date.now() + 60000;
 	};
 
 	const handleReset = () => {
@@ -81,7 +102,9 @@
 		onReset(snapshotStats);
 	};
 
-	const unlockedCount = $derived.by(() => (activityStats ? getUnlockedCount(activityStats) : 0));
+	const unlockedCount = $derived.by(() =>
+		activityStats ? getUnlockedCount(activityStats, elapsedMinutes) : 0
+	);
 </script>
 
 <div class="min-h-screen bg-background">
@@ -156,9 +179,14 @@
 							'border-primary/30 text-primary transition-all duration-300 hover:bg-primary/10',
 							cravingFeedback && 'scale-105 bg-primary text-primary-foreground hover:bg-primary/90'
 						)}
+						disabled={isCravingCooldown}
 					>
 						<ShieldCheck class="mr-2 h-4 w-4" />
-						{cravingFeedback ? "You're amazing!" : 'I resisted a craving!'}
+						{cravingFeedback
+							? "You're amazing!"
+							: isCravingCooldown
+								? `Wait ${cooldownRemaining}s`
+								: 'I resisted a craving!'}
 					</Button>
 					{#if activityStats && activityStats.cravingsResisted > 0 && !cravingFeedback}
 						<p class="mt-2 text-xs text-muted-foreground">
@@ -176,7 +204,10 @@
 
 		{#if activeTab === 'breathe'}
 			<div class="animate-in duration-300 fade-in">
-				<BreathingExercise onCycleComplete={handleCycleComplete} />
+				<BreathingExercise
+					onCycleComplete={handleCycleComplete}
+					onStreakReset={handleBreathingStreakReset}
+				/>
 			</div>
 		{/if}
 
@@ -194,12 +225,14 @@
 
 		{#if activeTab === 'achievements' && activityStats}
 			<div class="animate-in duration-300 fade-in">
-				<Achievements stats={activityStats} />
+				<Achievements stats={activityStats} {elapsedMinutes} />
 			</div>
 		{/if}
 	</main>
 
 	<footer class="mx-auto max-w-lg px-4 py-8 text-center">
-		<p class="text-xs text-muted-foreground">All data is stored locally. You are in control.</p>
+		<p class="text-xs text-muted-foreground">
+			All data is stored locally, there are no servers. You are in control.
+		</p>
 	</footer>
 </div>

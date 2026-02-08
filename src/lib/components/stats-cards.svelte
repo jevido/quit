@@ -48,7 +48,7 @@
 
 	<div class="space-y-1 rounded-xl border border-border bg-card p-4 text-center">
 		<div class="mb-1 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
-			<Clock class="h-4 w-4 text-accent" />
+			<Clock class="h-4 w-4 text-primary" />
 		</div>
 		<div class="font-serif text-xl font-bold text-foreground md:text-2xl">{lifeString}</div>
 		<div class="text-[10px] tracking-wide text-muted-foreground uppercase md:text-xs">

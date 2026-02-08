@@ -5,11 +5,13 @@
 	import { BREATHING_STEPS } from '$lib/motivational-messages.js';
 	import { cn } from '$lib/utils.js';
 
-	let { onCycleComplete = null } = $props();
+	let { onCycleComplete = null, onStreakReset = null } = $props();
 
 	let isRunning = $state(false);
+	let isPreparing = $state(false);
 	let stepIndex = $state(0);
 	let countdown = $state(BREATHING_STEPS[0].duration);
+	let prepCountdown = $state(5);
 	let cycles = $state(0);
 	let timerId = null;
 
@@ -20,14 +22,29 @@
 
 	const reset = () => {
 		isRunning = false;
+		isPreparing = false;
 		stepIndex = 0;
 		countdown = BREATHING_STEPS[0].duration;
+		prepCountdown = 5;
 		cycles = 0;
+		if (onStreakReset) onStreakReset();
 	};
 
 	const startTimer = () => {
 		clearInterval(timerId);
 		timerId = setInterval(() => {
+			if (isPreparing) {
+				if (prepCountdown <= 1) {
+					isPreparing = false;
+					isRunning = true;
+					stepIndex = 0;
+					countdown = BREATHING_STEPS[0].duration;
+					return;
+				}
+				prepCountdown -= 1;
+				return;
+			}
+			if (!isRunning) return;
 			if (countdown <= 1) {
 				const nextIndex = (stepIndex + 1) % BREATHING_STEPS.length;
 				if (nextIndex === 0) {
@@ -48,7 +65,7 @@
 	};
 
 	$effect(() => {
-		if (isRunning) {
+		if (isRunning || isPreparing) {
 			startTimer();
 		} else {
 			stopTimer();
@@ -89,7 +106,10 @@
 				}s;`}
 			></div>
 			<div class="relative z-10 text-center">
-				{#if isRunning}
+				{#if isPreparing}
+					<div class="font-serif text-3xl font-bold text-foreground">{prepCountdown}</div>
+					<div class="mt-1 text-sm font-medium text-primary">Get ready</div>
+				{:else if isRunning}
 					<div class="font-serif text-3xl font-bold text-foreground">{countdown}</div>
 					<div class="mt-1 text-sm font-medium text-primary">{currentStep.phase}</div>
 				{:else}
@@ -116,13 +136,24 @@
 			<RotateCcw class="h-4 w-4" />
 		</Button>
 		<Button
-			onclick={() => (isRunning = !isRunning)}
+			onclick={() => {
+				if (isRunning) {
+					isRunning = false;
+					if (onStreakReset) onStreakReset();
+				} else if (!isPreparing) {
+					isPreparing = true;
+					prepCountdown = 5;
+				}
+			}}
 			class="bg-primary px-8 text-primary-foreground hover:bg-primary/90"
 			size="lg"
 		>
 			{#if isRunning}
 				<Pause class="mr-2 h-4 w-4" />
 				Pause
+			{:else if isPreparing}
+				<Pause class="mr-2 h-4 w-4" />
+				Cancel
 			{:else}
 				<Play class="mr-2 h-4 w-4" />
 				{cycles > 0 ? 'Resume' : 'Start'}

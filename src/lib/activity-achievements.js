@@ -12,6 +12,15 @@ export const ACTIVITY_ACHIEVEMENTS = [
 		getValue: (stats) => stats.breathingCycles
 	},
 	{
+		id: 'breath-streak-2',
+		title: 'Settling In',
+		description: 'Complete 2 breathing cycles in a row. You are finding your rhythm.',
+		icon: 'wind',
+		category: 'breathing',
+		threshold: 2,
+		getValue: (stats) => stats.longestBreathingStreak
+	},
+	{
 		id: 'breath-5',
 		title: 'Finding Calm',
 		description:
@@ -22,6 +31,15 @@ export const ACTIVITY_ACHIEVEMENTS = [
 		getValue: (stats) => stats.breathingCycles
 	},
 	{
+		id: 'breath-streak-4',
+		title: 'One Minute Calm',
+		description: 'Stay with the exercise for 1 minute (4 cycles) without stopping.',
+		icon: 'wind',
+		category: 'breathing',
+		threshold: 4,
+		getValue: (stats) => stats.longestBreathingStreak
+	},
+	{
 		id: 'breath-10',
 		title: 'Deep Breather',
 		description:
@@ -30,6 +48,15 @@ export const ACTIVITY_ACHIEVEMENTS = [
 		category: 'breathing',
 		threshold: 10,
 		getValue: (stats) => stats.breathingCycles
+	},
+	{
+		id: 'breath-streak-8',
+		title: 'Two Minute Flow',
+		description: 'Complete 8 consecutive cycles. Your breath is steady and focused.',
+		icon: 'wind',
+		category: 'breathing',
+		threshold: 8,
+		getValue: (stats) => stats.longestBreathingStreak
 	},
 	{
 		id: 'breath-25',
@@ -68,6 +95,150 @@ export const ACTIVITY_ACHIEVEMENTS = [
 		category: 'breathing',
 		threshold: 250,
 		getValue: (stats) => stats.breathingCycles
+	},
+	{
+		id: 'time-1hr',
+		title: 'First Hour',
+		description: 'One hour smoke-free. The first step is already behind you.',
+		icon: 'star',
+		category: 'streak',
+		threshold: 60,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-6hr',
+		title: 'Six Hours Strong',
+		description: 'Six hours smoke-free. Your body is already adjusting.',
+		icon: 'sparkles',
+		category: 'streak',
+		threshold: 360,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-12hr',
+		title: 'First Sunrise',
+		description: 'Twelve hours smoke-free. A new day, a new you.',
+		icon: 'star',
+		category: 'streak',
+		threshold: 720,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-1day',
+		title: 'One Day Clean',
+		description: '24 hours smoke-free. That is real momentum.',
+		icon: 'trophy',
+		category: 'streak',
+		threshold: 1440,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-3day',
+		title: 'Weekend Strong',
+		description: 'Three days smoke-free. You are clearing the hardest stretch.',
+		icon: 'shield',
+		category: 'streak',
+		threshold: 4320,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-1wk',
+		title: 'One Week',
+		description: 'Seven days smoke-free. Your routine is changing.',
+		icon: 'sparkles',
+		category: 'streak',
+		threshold: 10080,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-2wk',
+		title: 'Two Weeks',
+		description: 'Fourteen days smoke-free. Your cravings are fading.',
+		icon: 'leaf',
+		category: 'streak',
+		threshold: 20160,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-1mo',
+		title: 'One Month',
+		description: 'Thirty days smoke-free. You are building a new normal.',
+		icon: 'trophy',
+		category: 'streak',
+		threshold: 43200,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-3mo',
+		title: 'Quarter Year',
+		description: 'Three months smoke-free. Your body is thanking you.',
+		icon: 'star',
+		category: 'streak',
+		threshold: 129600,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-100d',
+		title: 'Century Days',
+		description: '100 days smoke-free. Triple digits. Serious change.',
+		icon: 'star',
+		category: 'streak',
+		threshold: 144000,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-6mo',
+		title: 'Half Year',
+		description: 'Six months smoke-free. You are proving this is for good.',
+		icon: 'trophy',
+		category: 'streak',
+		threshold: 259200,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-1yr',
+		title: 'One Year',
+		description: 'A full year smoke-free. Legendary.',
+		icon: 'crown',
+		category: 'streak',
+		threshold: 525600,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-1000d',
+		title: 'Kiloday',
+		description: '1000 days smoke-free. You made this your identity.',
+		icon: 'crown',
+		category: 'streak',
+		threshold: 1440000,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-2yr',
+		title: 'Two Years',
+		description: 'Two years smoke-free. Your life has changed.',
+		icon: 'crown',
+		category: 'streak',
+		threshold: 1051200,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-5yr',
+		title: 'Five Years',
+		description: 'Five years smoke-free. Unshakeable.',
+		icon: 'crown',
+		category: 'streak',
+		threshold: 2628000,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
+	},
+	{
+		id: 'time-10yr',
+		title: 'Ten Years',
+		description: 'Ten years smoke-free. A decade of freedom.',
+		icon: 'crown',
+		category: 'streak',
+		threshold: 5256000,
+		getValue: (_stats, elapsedMinutes = 0) => elapsedMinutes
 	},
 	{
 		id: 'craving-1',
@@ -126,7 +297,7 @@ export const ACTIVITY_ACHIEVEMENTS = [
 	{
 		id: 'visit-1',
 		title: 'Checking In',
-		description: 'Open the app for the first time. Showing up is the hardest part.',
+		description: 'Open the app for the first time. Wanting to quit is the hardest part.',
 		icon: 'sparkles',
 		category: 'visits',
 		threshold: 1,
@@ -215,12 +386,12 @@ export const ACTIVITY_ACHIEVEMENTS = [
 	}
 ];
 
-export function getAchievementProgress(achievement, stats) {
-	return Math.min(1, achievement.getValue(stats) / achievement.threshold);
+export function getAchievementProgress(achievement, stats, elapsedMinutes = 0) {
+	return Math.min(1, achievement.getValue(stats, elapsedMinutes) / achievement.threshold);
 }
 
-export function getUnlockedCount(stats = DEFAULT_STATS) {
+export function getUnlockedCount(stats = DEFAULT_STATS, elapsedMinutes = 0) {
 	return ACTIVITY_ACHIEVEMENTS.filter(
-		(achievement) => achievement.getValue(stats) >= achievement.threshold
+		(achievement) => achievement.getValue(stats, elapsedMinutes) >= achievement.threshold
 	).length;
 }
