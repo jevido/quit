@@ -28,4 +28,5 @@
 </svelte:head>
 
 <ModeWatcher />
+
 {@render children()}

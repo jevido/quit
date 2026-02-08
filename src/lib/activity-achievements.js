@@ -97,6 +97,15 @@ export const ACTIVITY_ACHIEVEMENTS = [
 		getValue: (stats) => stats.breathingCycles
 	},
 	{
+		id: 'breath-hold-60',
+		title: 'Minute Hold',
+		description: 'Hold your breath for a full minute. Strong, steady, and controlled.',
+		icon: 'wind',
+		category: 'breathing',
+		threshold: 60,
+		getValue: (stats) => stats.maxHoldSeconds
+	},
+	{
 		id: 'time-1hr',
 		title: 'First Hour',
 		description: 'One hour smoke-free. The first step is already behind you.',

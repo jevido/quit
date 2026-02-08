@@ -4,6 +4,7 @@ export const DEFAULT_STATS = {
 	breathingCycles: 0,
 	breathingStreak: 0,
 	longestBreathingStreak: 0,
+	maxHoldSeconds: 0,
 	cravingsResisted: 0,
 	appVisits: 0,
 	dailyStreak: 0,
@@ -74,6 +75,11 @@ export function resetBreathingStreak(stats) {
 
 export function addCravingResisted(stats) {
 	return { ...stats, cravingsResisted: stats.cravingsResisted + 1 };
+}
+
+export function recordMaxHold(stats, seconds) {
+	if (!seconds || seconds <= stats.maxHoldSeconds) return stats;
+	return { ...stats, maxHoldSeconds: seconds };
 }
 
 export function clearStats() {

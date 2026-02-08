@@ -55,6 +55,12 @@
 				(achievement) => achievement.getValue(stats, elapsedMinutes) >= achievement.threshold
 			).length
 	);
+
+	const unlockedIds = $derived.by(() =>
+		ACTIVITY_ACHIEVEMENTS.filter(
+			(achievement) => achievement.getValue(stats, elapsedMinutes) >= achievement.threshold
+		).map((achievement) => achievement.id)
+	);
 </script>
 
 <div class="space-y-5">

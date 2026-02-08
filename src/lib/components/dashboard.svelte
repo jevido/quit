@@ -8,6 +8,7 @@
 		addCravingResisted,
 		clearStats,
 		loadStats,
+		recordMaxHold,
 		resetBreathingStreak,
 		recordAppVisit,
 		saveStats
@@ -36,6 +37,8 @@
 	let activityStats = $state(null);
 	let cravingFeedback = $state(false);
 	let cravingCooldownUntil = $state(0);
+	let cravingSessionActive = $state(false);
+	let cravingSessionSeed = $state(0);
 	let elapsedInterval = null;
 	let cravingTimeout = null;
 
@@ -80,8 +83,14 @@
 	);
 	const isCravingCooldown = $derived.by(() => cooldownRemaining > 0);
 
-	const handleCravingResisted = () => {
-		if (isCravingCooldown) return;
+	const startCravingSession = () => {
+		if (isCravingCooldown || cravingSessionActive) return;
+		cravingSessionActive = true;
+		cravingSessionSeed += 1;
+		activeTab = 'breathe';
+	};
+
+	const handleCravingSessionComplete = () => {
 		if (!activityStats) return;
 		const updated = addCravingResisted(activityStats);
 		saveStats(updated);
@@ -94,6 +103,16 @@
 		}, 2000);
 
 		cravingCooldownUntil = Date.now() + 60000;
+		cravingSessionActive = false;
+	};
+
+	const handleHoldDurationUpdate = (seconds) => {
+		if (!activityStats) return;
+		const updated = recordMaxHold(activityStats, seconds);
+		if (updated !== activityStats) {
+			saveStats(updated);
+			activityStats = updated;
+		}
 	};
 
 	const handleReset = () => {
@@ -173,20 +192,22 @@
 
 				<div class="text-center">
 					<Button
-						onclick={handleCravingResisted}
+						onclick={startCravingSession}
 						variant="outline"
 						class={cn(
 							'border-primary/30 text-primary transition-all duration-300 hover:bg-primary/10',
 							cravingFeedback && 'scale-105 bg-primary text-primary-foreground hover:bg-primary/90'
 						)}
-						disabled={isCravingCooldown}
+						disabled={isCravingCooldown || cravingSessionActive}
 					>
 						<ShieldCheck class="mr-2 h-4 w-4" />
 						{cravingFeedback
 							? "You're amazing!"
 							: isCravingCooldown
 								? `Wait ${cooldownRemaining}s`
-								: 'I resisted a craving!'}
+								: cravingSessionActive
+									? 'Breathing...'
+									: 'Resist craving'}
 					</Button>
 					{#if activityStats && activityStats.cravingsResisted > 0 && !cravingFeedback}
 						<p class="mt-2 text-xs text-muted-foreground">
@@ -204,10 +225,17 @@
 
 		{#if activeTab === 'breathe'}
 			<div class="animate-in duration-300 fade-in">
-				<BreathingExercise
-					onCycleComplete={handleCycleComplete}
-					onStreakReset={handleBreathingStreakReset}
-				/>
+				{#key cravingSessionSeed}
+					<BreathingExercise
+						onCycleComplete={handleCycleComplete}
+						onStreakReset={handleBreathingStreakReset}
+						onSessionComplete={handleCravingSessionComplete}
+						onHoldDurationUpdate={handleHoldDurationUpdate}
+						{elapsedMinutes}
+						sessionCycles={cravingSessionActive ? 3 : null}
+						autoStart={cravingSessionActive}
+					/>
+				{/key}
 			</div>
 		{/if}
 
