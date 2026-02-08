@@ -324,7 +324,7 @@
 
 	{#if isRunning}
 		<p class="text-center text-xs font-medium text-muted-foreground">
-			Mode: {currentRoutine.name}
+			Routine: {currentRoutine.name}
 		</p>
 		<p class="animate-in text-center text-sm text-muted-foreground italic duration-500 fade-in">
 			{currentStep.instruction}
