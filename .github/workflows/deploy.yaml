@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   deploy:
@@ -15,4 +15,4 @@ jobs:
           username: "bakery"
           key: ${{ secrets.BAKERY_SSH_KEY }}
           script: |
-            bakery deploy quit.jevido.nl --repo https://github.com/jevido/quit.git --branch main
+            bakery deploy quit.jevido.nl --repo https://github.com/jevido/quit.git --branch master
